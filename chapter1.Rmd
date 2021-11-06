@@ -9,5 +9,7 @@
 date()
 
 ```
-The text continues here.
+Hello! I'm Maria, student of social data science study track. Excited to have this course and hope to learn more on statistics and programming!
+
+https://github.com/ntrmarie/IODS-project
 
