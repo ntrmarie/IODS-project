@@ -51,7 +51,7 @@ str(learning2014)
 # now the dataset includes 7 variables and 166 observations
 
 setwd("/Users/Maria/R/IODS-project")
-write.csv(learning2014, file = "/Users/Maria/R/IODS-project/data/learning2014.csv")
+write.csv(learning2014, file = "/Users/Maria/R/IODS-project/data/learning2014.csv", row.names = FALSE)
 learning2014 <- read.csv("/Users/Maria/R/IODS-project/data/learning2014.csv")
 str(learning2014)
 head(learning2014)
