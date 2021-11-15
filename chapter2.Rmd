@@ -1,13 +1,114 @@
-# Insert chapter 2 title here
+# Week 2. Regression analysis
 
-*Describe the work you have done this week and summarize your learning.*
+1. The dataset learning2014 describes the approaches to learning. It includes 7 variables and 166 observations.
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+Let's present the variables included into the dataset:
+
+-gender: includes the male and fe,ale division of observations
+-age: presents the age in years derived from the date of birth
+-attitude: presents global attitude toward statistics
+-stra: presents questions related to strategic learning
+-surf: presents questions related to surface learning
+-deep: presents questions related to deep learning
+-points: presents the number of exam points
+
 
 ```{r}
-date()
+learning2014 <- read.csv("/Users/Maria/R/IODS-project/data/learning2014.csv")
+str(learning2014)
+dim(learning2014)
 ```
 
-Here we go again...
+2. Now we create graphical overview of the data
+```{r}
+library(ggplot2)
+library(GGally)
+```
+
+
+```{r}
+# creates the plot matrix for the dataset
+p <- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+p
+```
+
+Plots' description:
+The first line of box plots on the upper side presents the gender wise distribution of "age", "attitude", "deep", "stra", "surf" and "points". Every plot includes lower and higher quartiles and median. Red colour shows female gender and blue colour - male gender. The first line also shows the gender distribution: the number of females(F) is twice bigger than males(M).
+
+The upper triangle presents coefficients of correlation with gender.
+The lower triangle presents scatter plots for all the variables and show the relationship between every two variables.
+The plots based on the diagonal from left upper side to right upper side present the distribution of all the continuous variables in our scope.
+
+The highest correlation coefficients are for the following variables:
+- "points" and "attitude" (for F 0,422, for M 0,451)
+- "points" and "stra" (for F 0,187, for M 0,118)
+- "surf" and "stra" (for F -0,156, for M -0,217)
+- "points" and "surf" (for F -0,128, for M -0,149)
+
+In addition:
+Age distribution is skewed towards young people (mostly 20 years old).
+
+
+3. Now we create regression model with multiple variables
+```{r}
+# creates regression model with three variables of highest (absolute) correlation with the target variable
+my_model <- lm(points ~ attitude + stra + surf, data = learning2014)
+```
+
+```{r}
+# shows the summary
+summary(my_model)
+```
+
+Summary of the model:
+- increase for 1 unit in "attitude" variable provides 3.4 units increase in points. The higher student's attitude towards statistics, the higher grade he gains on the exam. Positive attitude is important for achievement. 
+- increase for 1 unit in "stra" (strategic learning approach) increases points by 0.9 units. 
+- increase for 1 unit in "surf" (surface learning approach) decreases points by 0.6 units.
+- p-values show that only "attitude" is significant in the model on 5% significance level (p-values are less than 0.05) and "stra" and "surf" have p-values much higher than 0.05.
+
+Therefore, the hypothesis that these parameters are equal to zero is accepted. It means that  explanatory variable in our model doesn't have a statistically significant relationship with the target variable. Now we need to fit another model without a "surf" variable:
+
+
+```{r}
+# creates regression model with two variables 
+my_model2 <- lm(points ~ attitude + stra, data = learning2014)
+```
+
+```{r}
+# shows the summary
+summary(my_model2)
+```
+4.
+In second model both variables are significant on 1% significance level (p-values are less than 0.1).
+
+The new interpretation:
+- increase for 1 unit in "attitude" variable provides 3.5 units increase in "points". The higher student's attitude towards statistics, the higher grade he gains on the exam. 
+- increase for 1 unit in "strategic learning approach" increases "points" by 0.9 units.
+
+Multiple R-squared of the model:
+model explains 20% of variance in the data as far as $R^2 = 0.2$.
+
+
+5.Produce the following diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage. 
+
+```{r}
+# sets the plots' location
+par(mfrow = c(2,2))
+# creates diagnostic plots
+plot(my_model, which=c(1,2,5))
+```
+
+1)The scatter plot of residuals vs fitted on the left upper side shows that residuals are equally distributed around zero. Thus, the following assumption  is held: the variance around the regression line is the same for all values of the predictor variable "points". 
+
+2)The Q-Q plot on the right upper side provides a method to check if the normality of errors assumption (underlying the linear regression) is held. In our case it shows a very reasonable fit. 
+
+3)The scatter plot of residuals vs leverage on the left down side shows the impact single observations have on the model. We can definitely see three outliers: 35, 77 and 145. But they don't really influence the regression line. Therefore, our linear model fits the standards. 
+
+
+
+
+
+
+
+
+
