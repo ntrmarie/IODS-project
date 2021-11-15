@@ -2,8 +2,5 @@
 # About the project
 
 
-```{r}
-date()
-```
 I'm excited to have this course and hope to learn more on statistics and programming! My GitHub page: https://github.com/ntrmarie/IODS-project
 
