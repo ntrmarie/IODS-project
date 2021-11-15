@@ -4,7 +4,7 @@
 
 Let's present the variables included into the dataset:
 
--gender: includes the male and fe,ale division of observations
+-gender: includes the male and female division of observations
 -age: presents the age in years derived from the date of birth
 -attitude: presents global attitude toward statistics
 -stra: presents questions related to strategic learning
