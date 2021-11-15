@@ -5,7 +5,7 @@
 lrn14 <- read.table("http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt", sep = "\t", header = TRUE)
 str(lrn14)
 dim(lrn14)
-# comments: data includes 60 variables and 183 observations
+# comments: data includes 60 columns and 183 rows
 
 # access the dplyr library
 library(dplyr)
