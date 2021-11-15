@@ -41,6 +41,7 @@ The lower triangle presents scatter plots for all the variables and show the rel
 The plots based on the diagonal from left upper side to right upper side present the distribution of all the continuous variables in our scope.
 
 The highest correlation coefficients are for the following variables:
+
 * "points" and "attitude" (for F 0,422, for M 0,451)
 * "points" and "stra" (for F 0,187, for M 0,118)
 * "surf" and "stra" (for F -0,156, for M -0,217)
@@ -62,6 +63,7 @@ summary(my_model)
 ```
 
 Summary of the model:
+
 * increase for 1 unit in "attitude" variable provides 3.4 units increase in points. The higher student's attitude towards statistics, the higher grade he gains on the exam. Positive attitude is important for achievement. 
 * increase for 1 unit in "stra" (strategic learning approach) increases points by 0.9 units. 
 * increase for 1 unit in "surf" (surface learning approach) decreases points by 0.6 units.

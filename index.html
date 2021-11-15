@@ -228,7 +228,13 @@ p</code></pre>
 <p>Plots’ description:</p>
 <p>The first line of box plots on the upper side presents the gender wise distribution of “age”, “attitude”, “deep”, “stra”, “surf” and “points”. Every plot includes lower and higher quartiles and median. Red colour shows female gender and blue colour - male gender. The first line also shows the gender distribution: the number of females(F) is twice bigger than males(M).</p>
 <p>The upper triangle presents coefficients of correlation with gender. The lower triangle presents scatter plots for all the variables and show the relationship between every two variables. The plots based on the diagonal from left upper side to right upper side present the distribution of all the continuous variables in our scope.</p>
-<p>The highest correlation coefficients are for the following variables: * “points” and “attitude” (for F 0,422, for M 0,451) * “points” and “stra” (for F 0,187, for M 0,118) * “surf” and “stra” (for F -0,156, for M -0,217) * “points” and “surf” (for F -0,128, for M -0,149)</p>
+<p>The highest correlation coefficients are for the following variables:</p>
+<ul>
+<li>“points” and “attitude” (for F 0,422, for M 0,451)</li>
+<li>“points” and “stra” (for F 0,187, for M 0,118)</li>
+<li>“surf” and “stra” (for F -0,156, for M -0,217)</li>
+<li>“points” and “surf” (for F -0,128, for M -0,149)</li>
+</ul>
 <p>In addition: Age distribution is skewed towards young people (mostly 20 years old).</p>
 <ol start="3" style="list-style-type: decimal">
 <li>Now we create regression model with multiple variables</li>
@@ -257,7 +263,13 @@ summary(my_model)</code></pre>
 ## Residual standard error: 5.296 on 162 degrees of freedom
 ## Multiple R-squared:  0.2074, Adjusted R-squared:  0.1927 
 ## F-statistic: 14.13 on 3 and 162 DF,  p-value: 3.156e-08</code></pre>
-<p>Summary of the model: * increase for 1 unit in “attitude” variable provides 3.4 units increase in points. The higher student’s attitude towards statistics, the higher grade he gains on the exam. Positive attitude is important for achievement. * increase for 1 unit in “stra” (strategic learning approach) increases points by 0.9 units. * increase for 1 unit in “surf” (surface learning approach) decreases points by 0.6 units. * p-values show that only “attitude” is significant in the model on 5% significance level (p-values are less than 0.05) and “stra” and “surf” have p-values much higher than 0.05.</p>
+<p>Summary of the model:</p>
+<ul>
+<li>increase for 1 unit in “attitude” variable provides 3.4 units increase in points. The higher student’s attitude towards statistics, the higher grade he gains on the exam. Positive attitude is important for achievement.</li>
+<li>increase for 1 unit in “stra” (strategic learning approach) increases points by 0.9 units.</li>
+<li>increase for 1 unit in “surf” (surface learning approach) decreases points by 0.6 units.</li>
+<li>p-values show that only “attitude” is significant in the model on 5% significance level (p-values are less than 0.05) and “stra” and “surf” have p-values much higher than 0.05.</li>
+</ul>
 <p>Therefore, the hypothesis that these parameters are equal to zero is accepted. It means that explanatory variable in our model doesn’t have a statistically significant relationship with the target variable. Now we need to fit another model without a “surf” variable:</p>
 <pre class="r"><code># creates regression model with two variables 
 my_model2 &lt;- lm(points ~ attitude + stra, data = learning2014)</code></pre>
