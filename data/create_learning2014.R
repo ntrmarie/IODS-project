@@ -55,5 +55,3 @@ write.csv(learning2014, file = "/Users/Maria/R/IODS-project/data/learning2014.cs
 learning2014 <- read.csv("/Users/Maria/R/IODS-project/data/learning2014.csv")
 str(learning2014)
 head(learning2014)
-
-
