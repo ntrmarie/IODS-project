@@ -117,7 +117,7 @@ coef(model)
 ```{r}
 odds <- coef(model) %>% exp
 confi <- confint(model) %>% exp
-cbind(odds, ci)
+cbind(odds, confi)
 ```
 
 The model shows the following:
