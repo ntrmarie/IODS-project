@@ -44,11 +44,11 @@ Having combined two datasets we will analyze the following variables:
 * G3 - final grade
 
 ```{r, include=FALSE}
-
 library(dplyr)
 library(ggplot2)
 library(GGally)
 library(tidyr)
+library(cowplot)
 ```
 
 ```{r}
@@ -65,7 +65,7 @@ Let's choose 4  variables in the data and present four hypothesis about their re
 
 1) alcohol assumption decreases grades - **G1, G2, G3**
 2) more free time students have, more alcohol they drink - **freetime**
-3) alcohol assumption decreases the number of school absences - **absences**
+3) alcohol assumption is increased by the number of school absences - **absences**
 4) the worse relationships in the family, the higher alcohol assumption is - **famrel**
 
 ## Visualization and explanation
@@ -85,23 +85,29 @@ gather(bar) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_b
 ```
 The plots show the following:
 
-* the number of absences has only one peak that is 0-10, so mainly students have less the 10 times of absence
+* the number of absences has only one peak that is in 0-10, so mainly students have 0 jr only several absences
 * for main part of students quality of family relations can be estimated as good
 * for main part of students amount of free time can be estimated as average and high
 * the most frequent final grades are in 10-16 gap
 
 ```{r}
 # check the distribution with box plots
-d1 <- ggplot(alc, aes(x = high_use, y = G)) + geom_boxplot()
+# for high_use variable TRUE is for students for which 'alc_use' is greater than 2, otherwise FALSE
+# G is a mean grade
+d1 <- ggplot(alc, aes(x = high_use, y = G)) + geom_boxplot() + ylab("grade")
 d2 <- ggplot(alc, aes(x = high_use, y = freetime)) + geom_boxplot() 
 d3 <- ggplot(alc, aes(x = high_use, y = absences)) + geom_boxplot() 
-d4 <- ggplot(alc, aes(x = high_use, y = famrel)) + geom_boxplot()
+d4 <- ggplot(alc, aes(x = high_use, y = famrel)) + geom_boxplot() + ylab("family relations")
 
-d1;d2;d3;d4
+d <- plot_grid(d1, d2, d3, d4, labels = c('a', 'b', 'c', 'd'),align="hv")
+d
 ```
 The box plots show the following:
 
-* the distribution of !!!
+a) for mean grade and alcohol assumption(AA) plot the median for students with AA less than 2, is higher and there is an evidence that there are more students from this group that have higher mean grade, so we can confirm our hypothesis: alcohol assumption decreases grades
+b) free time and alcohol assumption(AA) plot presents equal results, so we can't confirm our hypothesis
+c) for absences and alcohol assumption(AA) plot the median is mainly the same for both students' groups and the number of absences is low. However, for those with AA grater than 2 we have more observations, so we can confirm our hypothesis: alcohol assumption is increased by the number of school absences
+d) for family relations and alcohol assumption(AA) plot the median is the same and relations in families students mainly estimate as good but the group with AA more than 2, students estimate the relations worse, so we can assume that our hypothesis can be confirmed: the worse relationships in the family, the higher alcohol assumption is
 
 
 ## Logistic regression
@@ -117,7 +123,7 @@ coef(model)
 ```{r}
 odds <- coef(model) %>% exp
 confi <- confint(model) %>% exp
-cbind(odds, ci)
+cbind(odds, confi)
 ```
 
 The model shows the following:
@@ -148,16 +154,9 @@ table(high_use = alc$high_use, prediction = alc$prediction)
 ```
 As it can be seen from the table, my model correctly classified 244+21=265 observations and failed with 90+15= 105 observations, the training error is 105/(265+105) = 0.28.
 
-```{r}
-g <- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
-g + geom_point()
-
-table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table() %>% addmargins()
-```
-
-Number of incorrectly classified observations can be estimated as average (training error).
 
 ```{r}
+# define average prediction error
 loss_func <- function(class, prob) {
   n_wrong <- abs(class - prob) > 0.5
   mean(n_wrong)
@@ -165,4 +164,11 @@ loss_func <- function(class, prob) {
 loss_func(class = alc$high_use, prob = alc$probability)
 ```
 We can see that the results are the same.
+
+```{r}
+# if try to guess
+mean(alc$high_use)
+```
+
+So, with simple guessing we can assume that 30% goes to mistake and the model gives 28%. It means that the model is a bit more precise results.
 
