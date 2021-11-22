@@ -564,7 +564,7 @@ select(alc, freetime, G, absences, famrel, high_use, probability, prediction) %&
 ## high_use FALSE TRUE
 ##    FALSE   244   15
 ##    TRUE     90   21</code></pre>
-<p>As it can be seen from the table, my model correctly classified 244+21=265 observations and failed with 90+15= 105 observations, the training error is 105/(265+105) = 0.28.</p>
+<p>As it can be seen from the table, the model correctly classified 244+21=265 observations and failed with 90+15= 105 observations, the training error is 105/(265+105) = 0.28.</p>
 <pre class="r"><code># define average prediction error
 loss_func &lt;- function(class, prob) {
   n_wrong &lt;- abs(class - prob) &gt; 0.5
