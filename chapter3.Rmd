@@ -152,7 +152,7 @@ alc <- mutate(alc, prediction = probability > 0.5)
 select(alc, freetime, G, absences, famrel, high_use, probability, prediction) %>% tail(10)
 table(high_use = alc$high_use, prediction = alc$prediction)
 ```
-As it can be seen from the table, my model correctly classified 244+21=265 observations and failed with 90+15= 105 observations, the training error is 105/(265+105) = 0.28.
+As it can be seen from the table, the model correctly classified 244+21=265 observations and failed with 90+15= 105 observations, the training error is 105/(265+105) = 0.28.
 
 
 ```{r}
