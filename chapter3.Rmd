@@ -5,7 +5,7 @@
 The data approach student achievement in secondary education of two Portuguese schools.
 We are interested in two datasets presenting the performance in Mathematics (math) and Portuguese language (por). 
 
-The whole information about data is presented [here] (https://archive.ics.uci.edu/ml/datasets/Student+Performance). 
+The whole information about data is presented here (https://archive.ics.uci.edu/ml/datasets/Student+Performance). 
 
 Having combined two datasets we will analyze the following variables:
 
