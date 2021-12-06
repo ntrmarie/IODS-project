@@ -160,8 +160,9 @@ plot(mca, invisible=c("var"), habillage = "quali")
 
 We can see that "how" and "where" are the most similar categories. We can conclude that 
 
-- people who buy tea in chain stores drink tea bags, and 
-- people who buy tea either in chain stores or in tea shops drink tea bags and unpackaged tea. - - people who buy tea in tea shops drink unpackaged tea 
+- people who buy tea in chain stores drink tea bags
+- people who buy tea either in chain stores or in tea shops drink tea bags and unpackaged tea
+- people who buy tea in tea shops drink unpackaged tea 
 - people drink just pure green tea without any additions and as for black and earl grey they add milk and lemon
 
 First dimension explains 15\% of variance, and the second dimension - 14\% of variance.
