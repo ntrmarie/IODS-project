@@ -68,6 +68,7 @@ Let's choose 4  variables in the data and present four hypothesis about their re
 3) alcohol assumption is increased by the number of school absences - **absences**
 4) the worse relationships in the family, the higher alcohol assumption is - **famrel**
 
+
 ## Visualization and explanation
 
 Let's create the plots to explore our hypothesis:
@@ -76,7 +77,6 @@ Let's create the plots to explore our hypothesis:
 # count mean for the grades
 alc$G <- (alc$G1 + alc$G2 + alc$G3)/3
 ```
-
 
 ```{r}
 # check the distribution with bar plots
