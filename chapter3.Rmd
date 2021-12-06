@@ -49,15 +49,14 @@ library(ggplot2)
 library(GGally)
 library(tidyr)
 library(cowplot)
-```
 
-```{r}
 # read the data
 alc <- read.csv("/Users/Maria/R/IODS-project/data/alc.csv")
 dim(alc)
 colnames(alc)
 str(alc)
 ```
+
 ## Hypothesis
 
 The purpose of this part is to study the relationships between high/low alcohol consumption and some of the other variables in the data. 
