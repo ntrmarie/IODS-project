@@ -1,0 +1,167 @@
+# Dimensionality reduction techniques
+
+```{r, include=FALSE}
+options(knitr.duplicate.label = "allow")
+```
+
+## Description
+
+The dataset includes now the following variables:
+
+- gni = Gross National Income per Capita
+- leb =  Life Expectancy at Birth 
+- eye = Expected Years of Education
+- mmr = Maternal Mortality Ratio 
+- abr = Adolescent Birth Rate
+- prp = Female Percent Representation in Parliament 
+- edu.rat = the ratio of Female and Male populations with secondary education (secedu.f/secedu.m)
+- lab.rat = the ratio of labour force participation of females and males (lfpr.f/lfpr.m)
+
+## Exploratory analysis
+
+Let's explore the dataset
+
+```{r setup, include=FALSE}
+library(GGally)
+library(ggplot2)
+library(tidyr)
+human <- read.csv("/Users/Maria/R/IODS-project/data/human.csv")
+str(human)
+dim(human)
+summary(human)
+
+# attach the row names
+row.names(human) <- human[,1]
+human <- human[,-1]
+str(human)
+```
+
+
+
+```{r}
+# check the distribution
+library(corrplot)
+ggpairs(human)
+cor(human) %>% round(2)
+cor(human) %>% corrplot(method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+summary(human)
+```
+
+
+From the plot we can the following:
+
+1) the strong positive correlation is between:
+- expected years of education **eye** and life expectancy at birth **leb**: **0.79**
+- adolescent birth rate **abr** and maternal mortality ratio **mmr**: **0.76**
+
+2) the strong negative correlation is between:
+- maternal mortality ratio **mmr** and life expectancy at birth **leb**: **-0.86**
+- adolescent birth rate **abr** and life expectancy at birth **leb**: **-0.73**
+
+Only the expected years of education **eye** variable is close to the normal ditribution, other variables are skewed.
+
+
+## Principal component analysis (PCA)
+
+Let's perform principal component analysis for our dataset
+```{r}
+# performing principal component analysis (with the SVD method)
+pca_human <- prcomp(human)
+pca_human
+# drawing a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2, cex = c(0.6, 0.6), col = c("brown", "blue"))
+```
+
+
+## Standardization
+
+The result can't be explained, so we need to scale the data.
+
+```{r}
+# scaling the variables
+human_scaled <- scale(human)
+summary(human_scaled)
+```
+
+We can see that all the means equal zero.
+
+
+Then we perform PCA again but on standardized data
+```{r}
+# perform PCA (SVD method)
+human_pca <- prcomp(human_scaled)
+human_pca
+# drawthe biplot from the PCA result and the original variables
+biplot(human_pca, choices = 1:2, cex = c(0.4, 0.6), col = c("brown", "blue"))
+```
+
+
+Now the plot looks much better in terms of explanation. 
+
+We can conclude the following points:
+
+-  maternal mortality ratio **mmr**, adolescent birth rates **abr**, ratio of labour force participation of females and males **lab.rat** contribute to the first principal component (PC1)
+- life expectancy at birth **leb**, gross national income **gni**, expected years of education **eye**, female percent representation in parliament **prp**, the ratio of female and male populations with secondary education **edu.rat** contribute to the second principal component (PC2)
+- maternal mortality ratio **mmr** and adolescent birth rate **abr** go to one direction, so they present strong positive correlation; however, both variables show strong negative correlation with all other variables 
+- life expectancy at birth **leb**, the ratio of female and male populations with secondary education **edu.rat**, gross national income **gni**, expected years of education **eye** have strong positive correlation as far as these four variables go to one direction
+- female percent representation in parliament **prp** and ratio of labour force participation of females and males **lab.rat** have strong positive correlation because of the arrows' direction
+ 
+
+Personal interpretations of the first two principal component dimensions:
+
+- the first principal component shows the high level development of some countries (e.g. Sierra Leone, Burkina Faso, Republic of Chad, etc.) in terms of adolescent birth rates **abr** and maternal mortality ratio **mmr** 
+- the second principal component captures the countries that are more developed
+
+
+
+## Multiple Correspondence Analysis (MCA)
+
+We download the tea dataset
+```{r}
+library(FactoMineR)
+data(tea)
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+# new dataset with selected columns
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+str(tea_time)
+dim(tea_time)
+```
+
+Then we visualize the dataset:
+```{r}
+library(ggplot2)
+library(tidyr)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+Now we performe the MCA:
+```{r}
+mca <- MCA(tea_time, graph = FALSE)
+summary(mca)
+```
+
+
+We can see the strongest correlation of "how" and "where" with the first dimension and these variables are also correlated with the second dimension. 
+
+
+Let's visualize MCA by categories and individuals:
+
+```{r}
+# by individuals
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+
+```{r}
+# by individuals
+plot(mca, invisible=c("var"), habillage = "quali")
+```
+
+
+We can see that "how" and "where" are the most similar categories. We can conclude that 
+
+- people who buy tea in chain stores drink tea bags, and 
+- people who buy tea either in chain stores or in tea shops drink tea bags and unpackaged tea. - - people who buy tea in tea shops drink unpackaged tea 
+- people drink just pure green tea without any additions and as for black and earl grey they add milk and lemon
+
+First dimension explains 15\% of variance, and the second dimension - 14\% of variance.
