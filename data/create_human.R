@@ -69,8 +69,8 @@ dim(human) # 195*19
 #hdi.rank = HDI.Rank, 
 #hdi = Human.Development Index, 
 #leb =  Life.Expectancy.at.Birth, 
-#eye = Expected.Years.of.Schooling, 
-#mye = Mean.Years.of.Schooling,
+#eye = Expected.Years.of.Education, 
+#mye = Mean.Years.of.Education,
 #gni = Gross.National.Income..GNI..per.Capita, 
 #resid = GNI.per.Capita.Rank.Minus.HDI.Rank)
 #gii.rank = GII.Rank,
