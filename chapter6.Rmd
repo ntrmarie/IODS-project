@@ -8,23 +8,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r, include=FALSE}
-# read data
-BPRSL <- read.csv("/Users/Maria/R/IODS-project/data/BPRSL.csv")
-str(BPRSL)
-```
-
-```{r, include=FALSE}
-# factor again categorical variables
-BPRSL$treatment <- factor(BPRSL$treatment)
-BPRSL$subject <- factor(BPRSL$subject)
-```
-
-```{r}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-```
+# read data
+BPRS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", sep = " ", header = TRUE)
+BPRS$treatment <- factor(BPRS$treatment)
+BPRS$subject <- factor(BPRS$subject)
 
+# convert BPRS to long form
+BPRSL <-  BPRS %>% gather(key = weeks, value = bprs, -treatment, -subject)
+# add the week variable
+BPRSL <-  BPRSL %>% mutate(week = as.integer(substr(weeks,5,5)))
+
+str(BPRSL)
+```
 
 ### Data description
 The BPRS data includes 40 male subjects that were randomly assigned to one of two treatment groups and each subject was rated on the brief psychiatric rating scale (BPRS) measured for the period from week 0 to week 8. 
@@ -149,8 +147,8 @@ BPRSL8S2 <- BPRSL8S %>%
 # Fit the linear model with the mean as the response 
 fit <- lm(mean ~ baseline + treatment, data = BPRSL8S2)
 
-# Compute the analysis of variance table for the fitted model with anova()
-fit_anova <- anova(fit)
+# Fit anova
+anova(fit)
 ```
 
 
