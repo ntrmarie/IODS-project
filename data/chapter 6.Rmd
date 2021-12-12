@@ -1,0 +1,159 @@
+# Analysis of longitudinal data
+
+## Part 1
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, include=FALSE}
+# read data
+BPRSL <- read.csv("/Users/Maria/R/IODS-project/data/BPRSL.csv")
+str(BPRSL)
+```
+
+```{r, include=FALSE}
+# factor again categorical variables
+BPRSL$treatment <- factor(BPRSL$treatment)
+BPRSL$subject <- factor(BPRSL$subject)
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+
+### Data description
+The BPRS data includes 40 male subjects that were randomly assigned to one of two treatment groups and each subject was rated on the brief psychiatric rating scale (BPRS) measured for the period from week 0 to week 8. 
+The BPRS assesses the level of 18 symptom constructs such as hostility, suspiciousness, hallucinations and grandiosity; each of these is rated from 1 (not present) to 7 (extremely severe). 
+The scale is used to evaluate patients suspected of having schizophrenia.
+
+
+Let's plot the BPRSL dataset
+```{r}
+ggplot(BPRSL, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(BPRSL$bprs), max(BPRSL$bprs)))
+```
+
+From the plots we can see the following:
+
+- the BPRS scores for the main part of respondents is decreasing from week 0 to week 8
+- the men with higher BPRS score at the week 0 tend to have higher score the following weeks
+
+
+
+To explain why the men with higher BPRS score at the week 0 tend to have higher score the following weeks we should standardized values of each observation
+
+```{r}
+# Standardize the variable bprs
+BPRSL <- BPRSL %>%
+  group_by(week) %>%
+  mutate(stdbprs = (bprs - mean(bprs))/sd(bprs) ) %>%
+  ungroup()
+
+# Glimpse the data
+glimpse(BPRSL)
+
+# Plot again with the standardized bprs
+ggplot(BPRSL, aes(x = week, y = stdbprs, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  scale_y_continuous(name = "standardized bprs")
+```
+
+The plot shows that in most cases if the respondent had high BPRS score at week 0, then he will have the high score at week 8.
+
+
+Now let's create summary plot for means
+```{r}
+# Number of subjects (per group)
+n <- 20
+
+# Summary data with mean and standard error of bprs by treatment and week 
+BPRSS <- BPRSL %>%
+  group_by(treatment, week) %>%
+  summarise( mean = mean(bprs), se = sd(bprs)/sqrt(n) ) %>%
+  ungroup()
+
+# Glimpse the data
+glimpse(BPRSS)
+
+# Plot the mean profiles
+ggplot(BPRSS, aes(x = week, y = mean, linetype = treatment, shape = treatment)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2)) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, linetype="1"), width=0.3) +
+  theme(legend.position = c(0.8,0.8)) +
+  scale_y_continuous(name = "mean(bprs) +/- se(bprs)")
+
+```
+From this plot we can conclude the following:
+
+- as we said earlier there is a common tendency of BPRS score decreasing during the weeks 0-8
+- with respect to the mean BPRS values we can assume that there is some kinf of difference (but not strong) between two groups and potentially in treatment results
+
+
+### Summary measure approach
+
+To clarify the assumption we can also create box plots for both treatment groups (summary measure approach)
+
+```{r}
+# Create a summary data by treatment and subject with mean as the summary variable
+# not include baseline week 0 
+BPRSL8S <- BPRSL %>%
+  filter(week > 0) %>%
+  group_by(treatment, subject) %>%
+  summarise( mean=mean(bprs) ) %>%
+  ungroup()
+
+# Draw a boxplot of the mean versus treatment
+ggplot(BPRSL8S, aes(x = treatment, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(bprs), weeks 1-8")
+
+```
+We see that the mean summary measure is more variable in the second treatment group.
+Then we can see that the boxplot of the second group has an outlier that is a subject whose mean BPRS score of the eight weeks is over 70. Then we should filter our data.
+
+```{r}
+# Create a new data by filtering the outlier and adjust the ggplot code the draw the plot again with the new data
+BPRSL8S1 <- filter(BPRSL8S, mean < 70)
+
+# Draw a new boxplot of the mean versus treatment
+ggplot(BPRSL8S1, aes(x = treatment, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(bprs), weeks 1-8")
+```
+Now we see that the eight-week mean of the second treatment group is lower than of the first group.
+
+Then we conduct a t-test to assess any difference between the treatment groups
+```{r}
+t.test(mean ~ treatment, data = BPRSL8S1, var.equal = TRUE)
+
+# Add the baseline from the original data as a new variable to the summary data
+BPRSL8S2 <- BPRSL8S %>%
+  mutate(baseline = BPRS$week0)
+
+# Fit the linear model with the mean as the response 
+fit <- lm(mean ~ baseline + treatment, data = BPRSL8S2)
+
+# Compute the analysis of variance table for the fitted model with anova()
+fit_anova <- anova(fit)
+```
+
+
+
+
+## Part 2
