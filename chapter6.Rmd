@@ -186,7 +186,7 @@ We see that the baseline RATS is in strong relations with the mean measure.
 # read data
 BPRS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", 
                    sep  =" ", header = T)
-BPRS$subject <- seq(1, 40) # change the subject numbers to exlude mistakes
+BPRS$subject <- seq(1, 40) # change the subject numbers to exclude mistakes
 BPRS$treatment <- factor(BPRS$treatment)
 BPRS$subject <- factor(BPRS$subject)
 BPRSL <-  BPRS %>% gather(key = weeks, value = bprs, -treatment, -subject)

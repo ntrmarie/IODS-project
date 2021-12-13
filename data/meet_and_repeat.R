@@ -13,7 +13,7 @@ summary(BPRS)
 #The BPRS assesses the level of 18 symptom constructs such as hostility, suspiciousness, hallucinations and grandiosity; each of these is rated from 1 (not present) to 7 (extremely severe). 
 #The scale is used to evaluate patients suspected of having schizophrenia.
 
-RATS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", sep = "\t", header = TRUE)
+RATS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", sep = "", header = TRUE)
 str(RATS)
 names(RATS)
 summary(RATS)
@@ -60,3 +60,4 @@ str(RATSL)
 # save the data
 write.csv(BPRSL, file = "/Users/Maria/R/IODS-project/data/BPRSL.csv", row.names = FALSE)
 write.csv(RATSL, file = "/Users/Maria/R/IODS-project/data/RATSL.csv", row.names = FALSE)
+
